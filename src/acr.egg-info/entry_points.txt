@@ -1,0 +1,2 @@
+[console_scripts]
+acr = acr.cli.main:app

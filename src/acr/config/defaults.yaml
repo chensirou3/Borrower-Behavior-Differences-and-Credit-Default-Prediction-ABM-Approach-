@@ -1,0 +1,148 @@
+# Default configuration for ACR experiments
+
+seed: 42
+
+population:
+  N: 5000
+
+timeline:
+  T: 120              # 月；十年
+  start_period: 1
+
+traits:               # 阶段0：独立截断正态
+  gamma:
+    mean: 2.0
+    sd: 0.6
+    min: 0.5
+    max: null
+  beta:
+    mean: 0.90
+    sd: 0.08
+    min: 0.60
+    max: 1.00
+  kappa:
+    mean: 0.50
+    sd: 0.25
+    min: 0.00
+    max: 1.50
+  omega:
+    mean: 0.00
+    sd: 0.80
+    min: null
+    max: null
+  eta:
+    mean: 0.70
+    sd: 0.20
+    min: 0.00
+    max: 1.00
+
+proxies:
+  noise_sd: 0.12
+  # 每个代理的系数（弱相关，保留噪声）
+  mapping:
+    night_active_ratio:
+      kappa: 0.50
+      beta: -0.20
+      intercept: 0.20
+      clip: [0.0, 1.0]
+    session_std:
+      kappa: 0.80
+      intercept: 0.50
+      min: 0.01
+    task_completion_ratio:
+      kappa: -0.40
+      beta: -0.20
+      intercept: 0.85
+      clip: [0.0, 1.0]
+    spending_volatility:
+      kappa: 0.50
+      beta: -0.20
+      omega: 0.30
+      intercept: 0.30
+      min: 0.01
+
+environment:
+  # 十年正弦 + 微噪声
+  sine:
+    enabled: true
+    period: 120
+    ar1_rho: 0.2
+    noise_sd: 0.05
+  # 三条线由 Et 派生
+  interest:
+    r_mid_annual: 0.12
+    r_amp_annual: 0.06
+  approval:
+    q_mid: 0.70
+    q_amp: 0.15
+  macro_neg:
+    m0: 0.10
+    m1: 0.25
+
+application:
+  base_rate: 0.30
+  amp_with_env: 0.05
+
+loan:
+  base_multiple_month_income: 0.30
+  noise_sd: 2000.0
+  min_amount: 500.0
+  max_amount: 50000.0
+
+dgp:
+  logit_coefs:
+    a0: -2.0
+    a1_dti: 3.2
+    a2_macro_neg: 1.5
+    a3_one_minus_beta: 1.3
+    a4_kappa: 1.1
+    a5_gamma: 0.2
+    a6_rate_m: 0.8
+    a7_prior_default: 0.9
+  target_default_rate: [0.08, 0.15]   # 校准参考区间（非硬约束）
+
+bank_policy:
+  decision_mode: "cap"                 # "cap" 或 "threshold"
+  # 若 cap：每期批准 PD 最低的前 q_t；若 threshold：使用 tau_t 阈值
+  pricing:
+    r0_spread_annual: 0.00
+    phi_per_pd: 0.00                   # 先为0，后续可上风险定价
+  capital:
+    enabled: false
+    max_bad_rate: 0.12                 # 预留：超限则自适应收紧
+
+features:
+  baseline: ["dti","income_m","rate_m","macro_neg","prior_defaults","loan"]
+  proxies: ["night_active_ratio","session_std","task_completion_ratio","spending_volatility"]
+
+modeling:
+  algorithms:
+    - name: "logistic"
+      calibrate: "none"                # "none"|"platt"|"isotonic"
+    - name: "xgboost"
+      params:
+        n_estimators: 200
+        max_depth: 3
+        learning_rate: 0.08
+        subsample: 0.9
+        colsample_bytree: 0.8
+        reg_lambda: 1.0
+  split:
+    mode: "holdout"                    # "holdout" | "oot"（按时间）
+    test_size: 0.30
+
+evaluation:
+  fairness:
+    group_by: "night_active_high"      # 以 night_active_ratio>median 分组
+    eo_tpr_gap: true
+  plots:
+    roc: true
+    pr: true
+    ks: true
+    calibration: true
+
+outputs:
+  root_dir: "outputs"
+
+logging:
+  level: "INFO"

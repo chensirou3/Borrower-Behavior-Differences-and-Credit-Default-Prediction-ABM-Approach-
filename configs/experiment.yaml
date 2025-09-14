@@ -1,0 +1,30 @@
+# 实验配置文件
+# 基于默认配置的示例实验设置
+
+seed: 42
+
+population:
+  N: 5000
+
+timeline:
+  T: 120  # 十年月度数据
+
+# 可以在这里覆盖任何默认设置
+# 例如：
+# traits:
+#   gamma:
+#     mean: 2.5
+#     sd: 0.8
+
+# environment:
+#   sine:
+#     period: 96  # 8年周期
+
+# modeling:
+#   algorithms:
+#     - name: "logistic"
+#       calibrate: "platt"
+#     - name: "xgboost"
+#       params:
+#         n_estimators: 300
+#         max_depth: 4

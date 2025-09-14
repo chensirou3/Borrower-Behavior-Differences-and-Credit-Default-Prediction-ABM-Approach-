@@ -1,3 +1,38 @@
+Metadata-Version: 2.4
+Name: acr
+Version: 0.1.0
+Summary: Agent-Based Model for Credit Risk with Behavioral Proxies
+Author-email: Research Team <research@example.com>
+License: MIT
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: scikit-learn>=1.3.0
+Requires-Dist: matplotlib>=3.7.0
+Requires-Dist: xgboost>=1.7.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: typer>=0.9.0
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: rich>=13.0.0
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.0.280; extra == "dev"
+Requires-Dist: mypy>=1.5.0; extra == "dev"
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Provides-Extra: mesa
+Requires-Dist: mesa>=2.1.0; extra == "mesa"
+Dynamic: license-file
+
 # ABM Credit Risk (ACR) - 信贷风控代理模型
 
 基于代理的信贷风险建模框架，集成行为画像特征的本科可发表研究项目。
